@@ -57,5 +57,8 @@ public:
 class Logger {
     FILE* logFile;
     FILE* configFile; // change type?
+    CurrentParameters cp;
     RingBuffer backtrace;
+
+    CurrentParameters& readConfig(FILE* f);
 };

@@ -20,3 +20,9 @@ void RingBuffer::clear() {
     data.clear();
     pos = 0;
 }
+
+CurrentParameters& Logger::readConfig(FILE* f) {
+    // open f
+    // read f
+    // return CurrentConfig(...);  ne moze ni sa std::move()
+}
