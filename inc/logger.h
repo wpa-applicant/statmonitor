@@ -28,7 +28,7 @@ class Event {
     std::chrono::time_point<Clock> time;
     std::string event;
 public:
-    Event(std::string& evt) : time(currTime()), event(evt) {};
+    Event(const std::string& evt) : time(currTime()), event(evt) {};
 };
 
 class DebugInfo {
@@ -37,7 +37,7 @@ class DebugInfo {
     std::string picStatus;
     std::string adcStatus;
 public:
-    DebugInfo(std::string& picStat, std::string& adcStat)
+    DebugInfo(const std::string& picStat, std::string& adcStat)
     : time(currTime()), picStatus(picStat), adcStatus(adcStat) {};
 };
 

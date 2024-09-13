@@ -1,7 +1,7 @@
 #include "logger.h"
 
 void RingBuffer::write(DebugInfo&& i) {
-    data[pos] = std::move(i);
+    data[pos] = std::move(i); // don't swap
     if (++pos == size) {
         pos = 0;
     }
