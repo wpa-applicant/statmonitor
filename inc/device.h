@@ -16,7 +16,7 @@ public:
     Device(std::string name, std::string url) : name(name), baseURL(url), networkMgr(NetworkManager::getInstance())
     {
         createURLs();
-    };
+    }
     Device(std::string name) : Device(name, "http://localhost:3000/") {}
 
     ~Device() {};

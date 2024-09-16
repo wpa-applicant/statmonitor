@@ -28,7 +28,7 @@ class Event {
     std::chrono::time_point<Clock> time;
     std::string event;
 public:
-    Event(const std::string& evt) : time(currTime()), event(evt) {};
+    Event(const std::string& evt) : time(currTime()), event(evt) {}
 };
 
 class DebugInfo {
@@ -37,17 +37,19 @@ class DebugInfo {
     std::string picStatus;
     std::string adcStatus;
 public:
-    DebugInfo(const std::string& picStat, std::string& adcStat)
-    : time(currTime()), picStatus(picStat), adcStatus(adcStat) {};
+    DebugInfo(const std::string& picStat, const std::string& adcStat)
+    : time(currTime()), picStatus(picStat), adcStatus(adcStat) {}
+    DebugInfo() : DebugInfo("", "") {}
+    ~DebugInfo() {}
 };
 
 class RingBuffer {
     int size;
     int pos = 0;
-    std::vector<DebugInfo> data;
+    std::vector<DebugInfo> data;    // TODO OVDE PROBLEM
 public:
-    RingBuffer() : size(40) { data.resize(size); };
-    RingBuffer(int sz) : size(sz) { data.resize(size); };
+    RingBuffer() : size(40) { data.resize(size); }
+    RingBuffer(int sz) : size(sz) { data.resize(sz); }
 
     void write(DebugInfo&& i);
     void read();

@@ -39,7 +39,7 @@ void NetworkManager::deinit() {
     curl_global_cleanup();
 }
 
-std::string NetworkManager::GET(std::string URL) {
+std::string NetworkManager::GET(const std::string& URL) {
     curl_easy_setopt(handle, CURLOPT_POST, 0);
     readBuffer.clear();
     curl_easy_setopt(handle, CURLOPT_URL, URL.c_str());
@@ -48,7 +48,7 @@ std::string NetworkManager::GET(std::string URL) {
     return readBuffer;
 }
 
-std::string NetworkManager::POST(std::string URL, std::string postMessage = "") {
+std::string NetworkManager::POST(const std::string& URL, const std::string& postMessage) {
     curl_easy_setopt(handle, CURLOPT_POSTFIELDS, postMessage.c_str());
     readBuffer.clear();
     curl_easy_setopt(handle, CURLOPT_URL, URL.c_str());

@@ -25,4 +25,6 @@ CurrentParameters& Logger::readConfig(FILE* f) {
     // open f
     // read f
     // return CurrentConfig(...);  ne moze ni sa std::move()
+    cp = CurrentParameters(1,2,3,4,5);
+    return cp;
 }

@@ -2,6 +2,7 @@
 #include <curl/curl.h>
 #include <mutex>
 #include <iostream>
+#include <optional>
 
 class NetworkManager {
 //// Thread-safe singleton
@@ -18,8 +19,8 @@ public:
 ////
 public:
     enum ErrorCode {OK, GLOBAL_INIT_FAILED, EASY_INIT_FAILED};
-    std::string GET(std::string URL);
-    std::string POST(std::string URL, std::string postMessage);
+    std::string GET(const std::string& URL);
+    std::string POST(const std::string& URL, const std::string& postMessage = "");
 private:
     ErrorCode init();
     void deinit();
