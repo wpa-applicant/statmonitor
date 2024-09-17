@@ -11,8 +11,8 @@ protected:
     void createURLs();
 public:
     std::string status();
-    int reset();
-    int force_error();
+    std::string reset();
+    std::string force_error();
     Device(std::string name, std::string url) : name(name), baseURL(url), networkMgr(NetworkManager::getInstance())
     {
         createURLs();

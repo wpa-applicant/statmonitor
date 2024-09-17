@@ -1,18 +1,25 @@
 #include "commandQueue.h"
 
-void CommandQueue::add(const std::string& s) {
-    std::lock_guard<std::mutex> l(m);
-    q.push(s);
+void CommandQueue::add(std::shared_ptr<Device> instc, Command cmd) {
+    std::lock_guard<std::mutex> lock(mtx);
+    queue.emplace(CommandQueueItem(instc, cmd));
 }
-std::string CommandQueue::take() {
-    std::lock_guard<std::mutex> l(m);
-    std::string ret = q.front();
-    q.pop();
+
+void CommandQueue::add(const CommandQueueItem& c) {
+    std::lock_guard<std::mutex> lock(mtx);
+    queue.push(c);
+}
+
+CommandQueueItem CommandQueue::take() {
+    std::lock_guard<std::mutex> lock(mtx);
+    CommandQueueItem ret = std::move(queue.front());
+    queue.pop();
     return ret;
 }
+
 void CommandQueue::clear() {
-    std::lock_guard<std::mutex> l(m);
-    while(!q.empty()) {
-        (void)q.pop();
+    std::lock_guard<std::mutex> lock(mtx);
+    while(!queue.empty()) {
+        (void)queue.pop();
     }
 }
