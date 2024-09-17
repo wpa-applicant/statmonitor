@@ -4,7 +4,7 @@ project(statusMonitor)
 set(SRC
     "src/device.cpp"
     "src/logger.cpp"
-    "src/messageQueue.cpp"
+    "src/commandQueue.cpp"
     "src/networkManager.cpp"
     "src/statusMonitor.cpp"
 )

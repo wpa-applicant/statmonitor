@@ -46,7 +46,7 @@ public:
 class RingBuffer {
     int size;
     int pos = 0;
-    std::vector<DebugInfo> data;    // TODO OVDE PROBLEM
+    std::vector<DebugInfo> data;
 public:
     RingBuffer() : size(40) { data.resize(size); }
     RingBuffer(int sz) : size(sz) { data.resize(sz); }

@@ -1,10 +1,10 @@
-#pragma once
+#pragma onceE
 
 #include <mutex>
 #include <queue>
 #include <string>
 
-class MessageQueue {
+class CommandQueue {
     std::mutex m;
     std::queue<std::string> q;
     void add(const std::string& s);
