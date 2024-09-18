@@ -1,58 +1,48 @@
 #include "statusMonitor.h"
-#include "commandQueue.h"
 
-int main() {
-    CommandQueue cmdQ;
+void StatusMonitor::checkStatusPeriodically(std::shared_ptr<Device> dev) {
+    while(1) {
+        cmdQ.add(dev, status);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+}
 
-    std::shared_ptr<Device> adc = std::make_shared<Device>("adc");
-    std::shared_ptr<Device> pic = std::make_shared<Device>("pic");
+void StatusMonitor::deviceSetup(){
+    adc = std::make_shared<Device>("adc");
+    pic = std::make_shared<Device>("pic");
 
-    Command status = std::mem_fn(&Device::status);
-    Command reset = std::mem_fn(&Device::reset);
-    Command force_error = std::mem_fn(&Device::force_error);
+    status      = std::make_shared<Command>( std::mem_fn(&Device::status));
+    reset       = std::make_shared<Command>( std::mem_fn(&Device::reset));
+    force_error = std::make_shared<Command>( std::mem_fn(&Device::force_error));
 
-    // std::string (Device::* deviceStatus)() = &Device::status;
+    adcStatusChecker = std::thread(&StatusMonitor::checkStatusPeriodically, this, adc);
+    picStatusChecker = std::thread(&StatusMonitor::checkStatusPeriodically, this, pic);
 
-
-
-    std::cout << status(*adc) << std::endl;
-    std::cout << status(*pic) << std::endl;
-
-
-
-
-    cmdQ.add(adc, status);
-    cmdQ.add(adc, status);
-    cmdQ.add(adc, status);
-    cmdQ.add(adc, status);
-    cmdQ.add(pic, status);
-    cmdQ.add(adc, status);
-    cmdQ.add(adc, reset);
-    cmdQ.add(adc, status);
-    cmdQ.add(adc, status);
-    cmdQ.add(adc, status);
-    cmdQ.add(pic, reset);
-    cmdQ.add(adc, status);
-    cmdQ.add(pic, status);
-    cmdQ.add(adc, status);
-    cmdQ.add(adc, force_error);
-    cmdQ.add(pic, status);
-    cmdQ.add(adc, status);
-    cmdQ.add(adc, status);
-    cmdQ.add(pic, reset);
-    cmdQ.add(adc, status);
-    cmdQ.add(pic, status);
-    cmdQ.add(adc, reset);
-    cmdQ.add(pic, status);
-    cmdQ.add(adc, status);
+    adcStatusChecker.detach();
+    picStatusChecker.detach();
+}
 
 
-    while(!cmdQ.queueEmpty()) {
+void StatusMonitor::processingLoop() {
+    while(1) {
+        if(cmdQ.queueEmpty()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            continue;
+        }
         CommandQueueItem it = cmdQ.take();
         std::string res = it.doCmd();
-        std::cout << res << std::endl;
+        std::cout << ": " << res << std::endl;
     }
+}
 
+void StatusMonitor::start() {
+    deviceSetup();
+    processingLoop();
+}
+
+int main() {
+    StatusMonitor statMonitor;
+    statMonitor.start();
 
     return 0;
 }

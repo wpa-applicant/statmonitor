@@ -1,8 +1,13 @@
 #include "commandQueue.h"
 
-void CommandQueue::add(std::shared_ptr<Device> instc, Command cmd) {
+std::string CommandQueueItem::doCmd() {
+    std::string ret = command(instance);
+    return ret;
+}
+
+void CommandQueue::add(std::shared_ptr<Device> instc, CommandPtr cmd) {
     std::lock_guard<std::mutex> lock(mtx);
-    queue.emplace(CommandQueueItem(instc, cmd));
+    queue.emplace(CommandQueueItem(instc, *cmd));
 }
 
 void CommandQueue::add(const CommandQueueItem& c) {
@@ -22,4 +27,8 @@ void CommandQueue::clear() {
     while(!queue.empty()) {
         (void)queue.pop();
     }
+}
+
+bool CommandQueue::queueEmpty() {
+    return queue.empty();
 }
