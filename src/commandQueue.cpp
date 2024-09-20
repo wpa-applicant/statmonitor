@@ -1,13 +1,12 @@
 #include "commandQueue.h"
 
-std::string CommandQueueItem::doCmd() {
-    std::string ret = command(instance);
-    return ret;
+std::tuple<std::shared_ptr<Device>, bool, std::string> CommandQueueItem::doCmd() {
+    return std::make_tuple(instance, regularStatusCheckFlag, command(instance));
 }
 
-void CommandQueue::add(std::shared_ptr<Device> instc, CommandPtr cmd) {
+void CommandQueue::add(std::shared_ptr<Device> instc, CommandPtr cmd, bool rStatFlag) {
     std::lock_guard<std::mutex> lock(mtx);
-    queue.emplace(CommandQueueItem(instc, *cmd));
+    queue.emplace(CommandQueueItem(instc, *cmd, rStatFlag));
 }
 
 void CommandQueue::add(const CommandQueueItem& c) {

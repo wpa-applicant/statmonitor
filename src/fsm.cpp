@@ -1,62 +1,51 @@
-#include <vector>
-
-class State {
-public:
-    std::vector<State&> possibles;
-    void addPossible(State& p);
-
-    State() {}
-    State(std::vector<State&> possible) : possibles(possible) {}
-};
-
-void State::addPossible(State& p) {
-    possibles.push_back(p);
-}
-
-
-class StatusStateMachine {
-public:
-    // enum StateName {idle, operational, fault, reset};
-
-    State oldState;
-    State newState;
-
-    std::vector<State&> states;
-
-    /*  Do an iteration
-     *  Poll new state
-     *  if new state == old state - no transition
-     *  if new state != old state - figure out transition
-     *  return transition
-     */
-    int iterate();
-
-    StatusStateMachine();
-    ~StatusStateMachine();
-};
+#include "fsm.h"
 
 
 StatusStateMachine::StatusStateMachine() {
-    State idle, operational, fault, reset;
+    State idle("idle");
+    State operational("operational");
+    State fault("fault");
+    State reset("reset");
 
-    idle.addPossible(operational);
+    idle.transitionTo = [] (State& s) {
+        return "";
+    };
+    operational.transitionTo = [&](State& s) {
+        if(s == fault) {
+            return "recovering";
+        }
+        return "";
+    };
+    fault.transitionTo = [&] (State& s) {
+        if(s == operational) {
+            return "recovered";
+        } else if (s == reset) {
+            return "reset_start";
+        } else if (s == fault) {
+            return "fault";
+        }
+        return "";
+    };
+    reset.transitionTo = [&] (State& s) {
+        if(s == reset) {
+            return "reset_start";
+        } else if (s == operational) {
+            return "reset_done";
+        }
+        return "";
+    };
 
-    operational.addPossible(operational);
-    operational.addPossible(fault);
-
-    fault.addPossible(fault);
-    fault.addPossible(reset);
-
-    reset.addPossible(reset);
-    reset.addPossible(operational);
 }
 
 int StatusStateMachine::iterate() {
     // newState = get new state
-    // if(newState == oldState) {
+    // if(newState == currentState) {
     //     return Transitions::none;
     // }
 
+    // currentState.transition(newState);
 
-    // oldState = newState
+    // currentState = newState
+
+    return 0;
 }

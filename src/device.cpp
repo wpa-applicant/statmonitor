@@ -1,4 +1,14 @@
 #include "device.h"
+
+/* :( */
+std::string Device::config() {
+    std::string ret = networkMgr->GET(baseURL + "configuration");
+    if (ret == "") {
+        std::cout << "Error: networkManager returned no configuration" << std::endl;
+    }
+    return ret;
+}
+
 /*
  * Create URLs once for each new device
  */

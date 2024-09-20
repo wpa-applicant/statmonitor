@@ -51,8 +51,8 @@ public:
     RingBuffer() : size(40) { data.resize(size); }
     RingBuffer(int sz) : size(sz) { data.resize(sz); }
 
-    void write(DebugInfo&& i);
-    void read();
+    void save(DebugInfo&& info);
+    void load();
     void clear();
 };
 
@@ -62,5 +62,9 @@ class Logger {
     CurrentParameters cp;
     RingBuffer backtrace;
 
-    CurrentParameters& readConfig(FILE* f);
+public:
+    void logConfig(std::string cfg);
+    void logStatus(std::string stat);
+    void logEvent (std::string evt);
+    // CurrentParameters& readConfig(FILE* f);
 };
